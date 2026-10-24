@@ -1,0 +1,25 @@
+services:
+  api:
+    build: ./backend
+    environment:
+      DATABASE_URL: sqlite:////data/brandguard.db
+      CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173,http://localhost:8080
+    ports:
+      - "8000:8000"
+    volumes:
+      - brandguard-data:/data
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:8000/api
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  brandguard-data:
